@@ -1,8 +1,10 @@
 from graphics import Window, Point, Line, Cell
+from maze import Maze
 import random
 
 def main():
     window = Window(800, 600)
+    maze = Maze(50, 50, 3, 3, 10, 10, window)
     cells = []
     for i in range(5):
         cells.append(
@@ -15,6 +17,9 @@ def main():
 
     for cell in cells:
         cell.draw()
+
+    cells[1].draw_move(cells[2], True)
+    cells[2].draw_move(cells[3], False)
     window.wait_for_close()
     print("Finish")
 
