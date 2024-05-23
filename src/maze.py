@@ -1,4 +1,5 @@
 from graphics import Cell, Point
+from time import sleep
 
 class Maze:
     def __init__(
@@ -9,7 +10,8 @@ class Maze:
             num_cols,
             cell_size_x,
             cell_size_y,
-            window
+            verbose=False,
+            window=None
             ):
         self.__x = x
         self.__y = y
@@ -17,7 +19,9 @@ class Maze:
         self.__num_cols = num_cols
         self.__cell_size_x = cell_size_x
         self.__cell_size_y = cell_size_y
+        self.__verbose = verbose
         self.__window = window
+        self.__cells = None
 
         self.__create_cells()
 
@@ -26,7 +30,8 @@ class Maze:
         for i in range(self.__num_rows):
             for j in range(self.__num_cols):
                 self.__draw_cell(i, j)
-        self.__pretty_print()
+        if self.__verbose:
+            self.__pretty_print()
 
     def __draw_cell(self, i, j):
         x = j * self.__cell_size_x + self.__x
@@ -38,8 +43,22 @@ class Maze:
         self.__animate()
 
     def __animate(self):
-        #self.__window.__root.after(50, func=self.__window.redraw)
-        pass
+        if self.__window is None:
+            return
+        self.__window.redraw()
+        sleep(0.01)
+
+    def num_rows(self):
+        if self.__cells is None:
+            return 0
+        return len(self.__cells)
+
+    def num_cols(self):
+        if self.__cells is None:
+            return 0
+        if self.__cells[0] is None:
+            return 0
+        return len(self.__cells[0])
 
     def __pretty_print(self):
         for row in self.__cells:

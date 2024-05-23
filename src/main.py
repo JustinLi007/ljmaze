@@ -5,12 +5,12 @@ import random
 def main():
     WIN_WIDTH = 800
     WIN_HEIGHT = 600
-    ROWS = 5
-    COLS = 5
-    CELL_WIDTH = 100
-    CELL_HEIGHT = 100
+    ROWS = 12
+    COLS = 16
     X_OFFSET = 50
     Y_OFFSET = 50
+    CELL_WIDTH = (WIN_WIDTH - 2 * X_OFFSET) / COLS
+    CELL_HEIGHT = (WIN_HEIGHT - 2 * Y_OFFSET) / ROWS
     
     window = Window(WIN_WIDTH, WIN_HEIGHT)
     maze = Maze(
@@ -20,7 +20,8 @@ def main():
             COLS,
             CELL_WIDTH,
             CELL_HEIGHT,
-            window)
+            True,
+            None)
 
     window.wait_for_close()
     print("Finish")

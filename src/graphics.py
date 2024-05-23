@@ -49,7 +49,7 @@ class Line:
                 )
 
 class Cell:
-    def __init__(self, point1, point2, window):
+    def __init__(self, point1, point2, window=None):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
@@ -74,6 +74,8 @@ class Cell:
         self.__window.draw_line(path, fill_color)
 
     def draw(self):
+        if self.__window is None:
+            return
         top_left_corner = self.__point1
         bottom_right_corner = self.__point2
         top_right_corner = Point(self.__point2.x, self.__point1.y)
