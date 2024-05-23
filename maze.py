@@ -29,12 +29,17 @@ class Maze:
         self.__pretty_print()
 
     def __draw_cell(self, i, j):
-        # TODO: create cells.
-        
+        x = j * self.__cell_size_x + self.__x
+        y = i * self.__cell_size_y + self.__y
+        tl = Point(x, y)
+        br = Point(tl.x + self.__cell_size_x, tl.y + self.__cell_size_y)
+        self.__cells[i][j] = Cell(tl, br, self.__window)
+        self.__cells[i][j].draw()
         self.__animate()
 
     def __animate(self):
-        self.__window.after(50, self.__window.redraw)
+        #self.__window.__root.after(50, func=self.__window.redraw)
+        pass
 
     def __pretty_print(self):
         for row in self.__cells:

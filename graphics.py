@@ -76,14 +76,8 @@ class Cell:
     def draw(self):
         top_left_corner = self.__point1
         bottom_right_corner = self.__point2
-        top_right_corner = Point(
-                self.__point1.x + (self.__point2.x - self.__point1.x),
-                self.__point2.y - (self.__point2.y - self.__point1.y)
-                )
-        bottom_left_corner = Point(
-                self.__point2.x - (self.__point2.x - self.__point1.x),
-                self.__point1.y + (self.__point2.y - self.__point1.y)
-                )
+        top_right_corner = Point(self.__point2.x, self.__point1.y)
+        bottom_left_corner = Point(self.__point1.x, self.__point2.y)
 
         if self.has_top_wall:
             wall = Line(top_left_corner, top_right_corner)
@@ -101,14 +95,8 @@ class Cell:
     def __repr__(self):
         top_left_corner = self.__point1
         bottom_right_corner = self.__point2
-        top_right_corner = Point(
-                self.__point1.x + (self.__point2.x - self.__point1.x),
-                self.__point2.y - (self.__point2.y - self.__point1.y)
-                )
-        bottom_left_corner = Point(
-                self.__point2.x - (self.__point2.x - self.__point1.x),
-                self.__point1.y + (self.__point2.y - self.__point1.y)
-                )
+        top_right_corner = Point(self.__point2.x, self.__point1.y)
+        bottom_left_corner = Point(self.__point1.x, self.__point2.y)
         return (
 f"""
 TL: {(top_left_corner.x, top_left_corner.y)}
