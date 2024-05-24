@@ -40,6 +40,11 @@ class Maze:
         br = Point(tl.x + self.__cell_size_x, tl.y + self.__cell_size_y)
         self.__cells[i][j] = Cell(tl, br, self.__window)
         self.__cells[i][j].draw()
+        if i == 0 and j == 0:
+            print("PRE-COPY:", tl)
+            print("PRE-COPY:", self.__cells[i][j])
+            print("PRE-COPY:", self.__cells[i][j].get_top_left_corner())
+            print("PRE-COPY:", self.__cells[i][j].get_bottom_right_corner())
         self.__animate()
 
     def __animate(self):
@@ -59,6 +64,21 @@ class Maze:
         if self.__cells[0] is None:
             return 0
         return len(self.__cells[0])
+
+    def get_grid(self):
+        result = [[Cell] * self.__num_cols] * self.__num_rows
+        for r in range(self.__num_rows):
+            for c in range(self.__num_cols):
+                cur_cell = self.__cells[r][c]
+                print("COPY:", cur_cell.get_top_left_corner())
+                print("COPY:", cur_cell.get_bottom_right_corner())
+                result[r][c] = Cell(
+                        cur_cell.get_top_left_corner(),
+                        cur_cell.get_bottom_right_corner())
+                result[r][c].draw()
+                if r == 0 and c == 0:
+                    print(cur_cell)
+        return result
 
     def __pretty_print(self):
         for row in self.__cells:

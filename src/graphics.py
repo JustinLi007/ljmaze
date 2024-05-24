@@ -33,6 +33,9 @@ class Point:
         self.x = x
         self.y = y
 
+    def __repr__(self):
+        return f"({self.x}, {self.y})"
+
 class Line:
     def __init__(self, point1, point2):
         self.__point1 = point1
@@ -94,6 +97,14 @@ class Cell:
             wall = Line(top_right_corner, bottom_right_corner)
             self.__window.draw_line(wall)
 
+    def get_top_left_corner(self):
+        tl = Point(self.__point1.x, self.__point1.y)
+        return tl
+
+    def get_bottom_right_corner(self):
+        br = Point(self.__point2.x, self.__point2.y)
+        return br
+    
     def __repr__(self):
         top_left_corner = self.__point1
         bottom_right_corner = self.__point2

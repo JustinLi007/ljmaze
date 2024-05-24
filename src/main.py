@@ -20,7 +20,7 @@ def main():
             COLS,
             CELL_WIDTH,
             CELL_HEIGHT,
-            True,
+            False,
             None)
 
     window.wait_for_close()
