@@ -26,7 +26,10 @@ class Maze:
         self.__create_cells()
 
     def __create_cells(self):
-        self.__cells = [[Cell] * self.__num_cols] * self.__num_rows
+        self.__cells = [
+                [None for _ in range(self.__num_cols)] for _ in
+                range(self.__num_rows)
+                ]
         for i in range(self.__num_rows):
             for j in range(self.__num_cols):
                 self.__draw_cell(i, j)
@@ -40,11 +43,6 @@ class Maze:
         br = Point(tl.x + self.__cell_size_x, tl.y + self.__cell_size_y)
         self.__cells[i][j] = Cell(tl, br, self.__window)
         self.__cells[i][j].draw()
-        if i == 0 and j == 0:
-            print("PRE-COPY:", tl)
-            print("PRE-COPY:", self.__cells[i][j])
-            print("PRE-COPY:", self.__cells[i][j].get_top_left_corner())
-            print("PRE-COPY:", self.__cells[i][j].get_bottom_right_corner())
         self.__animate()
 
     def __animate(self):
@@ -66,20 +64,20 @@ class Maze:
         return len(self.__cells[0])
 
     def get_grid(self):
-        result = [[Cell] * self.__num_cols] * self.__num_rows
+        result = [
+                [None for _ in range(self.__num_cols)] for _ in
+                range(self.__num_rows)
+                ]
         for r in range(self.__num_rows):
             for c in range(self.__num_cols):
                 cur_cell = self.__cells[r][c]
-                print("COPY:", cur_cell.get_top_left_corner())
-                print("COPY:", cur_cell.get_bottom_right_corner())
                 result[r][c] = Cell(
                         cur_cell.get_top_left_corner(),
-                        cur_cell.get_bottom_right_corner())
-                result[r][c].draw()
-                if r == 0 and c == 0:
-                    print(cur_cell)
+                        cur_cell.get_bottom_right_corner()
+                        )
         return result
 
     def __pretty_print(self):
-        for row in self.__cells:
-            print(row)
+        print(self.__cells)
+        #for row in self.__cells:
+        #    print(row)
