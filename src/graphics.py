@@ -84,18 +84,30 @@ class Cell:
         top_right_corner = Point(self.__point2.x, self.__point1.y)
         bottom_left_corner = Point(self.__point1.x, self.__point2.y)
 
+        twall = Line(top_left_corner, top_right_corner)
+        lwall = Line(top_left_corner, bottom_left_corner)
+        bwall = Line(bottom_left_corner, bottom_right_corner)
+        rwall = Line(top_right_corner, bottom_right_corner)
+
         if self.has_top_wall:
-            wall = Line(top_left_corner, top_right_corner)
-            self.__window.draw_line(wall)
+            self.__window.draw_line(twall, "black")
+        else:
+            self.__window.draw_line(twall, "white")
+
         if self.has_left_wall:
-            wall = Line(top_left_corner, bottom_left_corner)
-            self.__window.draw_line(wall)
+            self.__window.draw_line(lwall, "black")
+        else:
+            self.__window.draw_line(lwall, "white")
+
         if self.has_bottom_wall:
-            wall = Line(bottom_left_corner, bottom_right_corner)
-            self.__window.draw_line(wall)
+            self.__window.draw_line(bwall, "black")
+        else:
+            self.__window.draw_line(bwall, "white")
+
         if self.has_right_wall:
-            wall = Line(top_right_corner, bottom_right_corner)
-            self.__window.draw_line(wall)
+            self.__window.draw_line(rwall, "black")
+        else:
+            self.__window.draw_line(rwall, "white")
 
     def get_top_left_corner(self):
         tl = Point(self.__point1.x, self.__point1.y)

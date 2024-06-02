@@ -33,6 +33,7 @@ class Maze:
         for i in range(self.__num_rows):
             for j in range(self.__num_cols):
                 self.__draw_cell(i, j)
+        self.__break_entrance_and_exit()
         if self.__verbose:
             self.__pretty_print()
 
@@ -50,6 +51,15 @@ class Maze:
             return
         self.__window.redraw()
         sleep(0.01)
+
+    def __break_entrance_and_exit(self): 
+        if self.__cells is None:
+            return
+        self.__cells[0][0].has_top_wall = False
+        self.__cells[0][0].draw()
+        self.__cells[self.__num_rows-1][self.__num_cols-1].has_bottom_wall = False
+        self.__cells[self.__num_rows-1][self.__num_cols-1].draw()
+        self.__animate()
 
     def num_rows(self):
         if self.__cells is None:
@@ -75,6 +85,10 @@ class Maze:
                         cur_cell.get_top_left_corner(),
                         cur_cell.get_bottom_right_corner()
                         )
+                result[r][c].has_top_wall = cur_cell.has_top_wall
+                result[r][c].has_bottom_wall = cur_cell.has_bottom_wall
+                result[r][c].has_left_wall = cur_cell.has_left_wall
+                result[r][c].has_right_wall = cur_cell.has_right_wall
         return result
 
     def __pretty_print(self):
