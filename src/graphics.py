@@ -57,6 +57,7 @@ class Cell:
         self.has_right_wall = True
         self.has_top_wall = True
         self.has_bottom_wall = True
+        self.visited = False
         self.__point1 = point1
         self.__point2 = point2
         self.__window = window

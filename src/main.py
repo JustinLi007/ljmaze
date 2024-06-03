@@ -21,13 +21,10 @@ def main():
             CELL_WIDTH,
             CELL_HEIGHT,
             False,
-            window)
+            window,
+            None)
     
     maze_grid = maze.get_grid()
-    
-    
-    print(maze_grid[0][0].has_top_wall)
-    print(maze_grid[ROWS-1][COLS-1].has_bottom_wall)
 
     window.wait_for_close()
     print("Finish")
