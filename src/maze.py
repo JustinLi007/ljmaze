@@ -58,7 +58,7 @@ class Maze:
         if self.__window is None:
             return
         self.__window.redraw()
-        sleep(0.01)
+        sleep(0.005)
 
     def __break_entrance_and_exit(self): 
         if self.__cells is None:
@@ -106,6 +106,63 @@ class Maze:
                 self.__cells[next_i][next_j].has_bottom_wall = False
 
             self.__break_walls_r(next_i, next_j)
+
+    def solve(self):
+        visited = {}
+        start = (0,0)
+        end = (self.__num_rows-1, self.__num_cols-1)
+        return self.__solve_r(visited, start, end)
+
+    def __solve_r(self, visited, start, end):
+        queue = [start]
+        prev = None
+        done = False
+        while len(queue) > 0:
+            current = queue.pop(0)
+            self.__cells[current[0]][current[1]].visited = True
+            
+            if current[0] == end[0] and current[1] == end[1]:
+                print("found end")
+                done = True
+            else:
+                print("searching...", current)
+
+            cur_cell = self.__cells[current[0]][current[1]]
+            if not done:
+                if not cur_cell.has_top_wall and current[0] - 1 >= 0 and not self.__cells[current[0]-1][current[1]].visited:
+                    queue.append((current[0] - 1, current[1]))
+                if not cur_cell.has_right_wall and current[1] + 1 <= self.__num_cols-1 and not self.__cells[current[0]][current[1]+1].visited:
+                    queue.append((current[0], current[1] + 1))
+                if not cur_cell.has_bottom_wall and current[0] + 1 <= self.__num_rows-1 and not self.__cells[current[0]+1][current[1]].visited:
+                    queue.append((current[0] + 1, current[1]))
+                if not cur_cell.has_left_wall and current[1] - 1 >= 0 and not self.__cells[current[0]][current[1]-1].visited:
+                    queue.append((current[0], current[1] - 1))
+
+            key = f"{current[0]}{current[1]}"
+            if visited.get(key) is None:
+                visited.update({key:()})
+            if prev is None:
+                visited.update({key:(current,)})
+            else:
+                prevKey = f"{prev[0]}{prev[1]}"
+                visited.update({key:(visited.get(prevKey) + (current,))})
+
+            prev = current
+
+            if done:
+                return True
+
+            #TODO: draw path based on path took to current cell.
+            # current drawing is flawed
+            """
+            next_pos = queue[0]
+            next_cell = self.__cells[next_pos[0]][next_pos[1]]
+            cur_cell.draw_move(next_cell)
+            self.__animate()
+            """
+
+        return False
+            
 
     def __reset_cells_visited(self):
         for r in range(self.__num_rows):

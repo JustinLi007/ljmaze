@@ -62,7 +62,8 @@ class Cell:
         self.__point2 = point2
         self.__window = window
 
-    def draw_move(self, bottom_left_corner, target_cell, undo=False):
+    def draw_move(self, target_cell, undo=False):
+        print("drawing...")
         fill_color = "gray" if undo else "red"
         self_center_point = Point(
                 (self.__point2.x - self.__point1.x) / 2 + self.__point1.x,
