@@ -3,10 +3,10 @@ from maze import Maze
 import random
 
 def main():
-    WIN_WIDTH = 800
-    WIN_HEIGHT = 800
+    WIN_WIDTH = 720
+    WIN_HEIGHT = 720
     ROWS = 12
-    COLS = 12
+    COLS = 16
     X_OFFSET = 50
     Y_OFFSET = 50
     CELL_WIDTH = (WIN_WIDTH - 2 * X_OFFSET) / COLS
@@ -26,8 +26,9 @@ def main():
     
     maze_grid = maze.get_grid()
     
-    result = maze.solve()
-    print(f"Maze solve result: {result}")
+    result = maze.solve(1)
+    print(f"Maze solve result: {result[0]}")
+    print(f"Path: {result[1]}")
 
     window.wait_for_close()
     print("Finish")

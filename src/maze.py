@@ -54,11 +54,11 @@ class Maze:
         self.__cells[i][j].draw()
         self.__animate()
 
-    def __animate(self):
+    def __animate(self, sleep_duration=0.002):
         if self.__window is None:
             return
         self.__window.redraw()
-        sleep(0.005)
+        sleep(sleep_duration)
 
     def __break_entrance_and_exit(self): 
         if self.__cells is None:
@@ -107,62 +107,121 @@ class Maze:
 
             self.__break_walls_r(next_i, next_j)
 
-    def solve(self):
-        visited = {}
+    def solve(self, type=0):
         start = (0,0)
         end = (self.__num_rows-1, self.__num_cols-1)
-        return self.__solve_r(visited, start, end)
+        result = None
+        if type == 0:
+            result = self.__solve_r_bfs(start, end)
+        else:
+            result = self.__solve_r_dfs(start, end)
+        return result
 
-    def __solve_r(self, visited, start, end):
-        queue = [start]
+    def __solve_r_bfs(self, start, end):
+        queue = []
+        queue.append((start, (start,)))
         prev = None
-        done = False
         while len(queue) > 0:
-            current = queue.pop(0)
-            self.__cells[current[0]][current[1]].visited = True
+            element = queue.pop(0)
+            x, y = element[0]
+            cell = self.__cells[x][y]
+            cell.visited = True
+
+            if not cell.has_top_wall and x-1 >= 0 and not self.__cells[x-1][y].visited:
+                step = (x-1, y)
+                queue.append((step, element[1] + (step,)))
+            if not cell.has_right_wall and y+1 <= self.__num_cols-1 and not self.__cells[x][y+1].visited:
+                step = (x, y+1)
+                queue.append((step, element[1] + (step,)))
+            if not cell.has_bottom_wall and x+1 <= self.__num_rows-1 and not self.__cells[x+1][y].visited:
+                step = (x+1, y)
+                queue.append((step, element[1] + (step,)))
+            if not cell.has_left_wall and y-1 >= 0 and not self.__cells[x][y-1].visited:
+                step = (x, y-1)
+                queue.append((step, element[1] + (step,)))
+       
+            sleep_duration = 0.005
+            if prev is not None:
+                path = prev[1]
+                path_len = len(path)
+                for i in range(1, path_len):
+                    from_cell = self.__cells[path[i-1][0]][path[i-1][1]]
+                    to_cell = self.__cells[path[i][0]][path[i][1]]
+                    from_cell.draw_move(to_cell, True)
+                self.__animate(sleep_duration)
             
-            if current[0] == end[0] and current[1] == end[1]:
-                print("found end")
-                done = True
-            else:
-                print("searching...", current)
+            path = element[1]
+            path_len = len(path)
+            for i in range(1, path_len):
+                from_cell = self.__cells[path[i-1][0]][path[i-1][1]]
+                to_cell = self.__cells[path[i][0]][path[i][1]]
+                from_cell.draw_move(to_cell)
+                if i == path_len - 2:
+                    break
+            self.__animate(sleep_duration * 1.5)
+ 
+            from_cell = self.__cells[path[path_len-2][0]][path[path_len-2][1]]
+            to_cell = self.__cells[path[path_len-1][0]][path[path_len-1][1]]
+            from_cell.draw_move(to_cell)
+            self.__animate(sleep_duration * 1.5)
 
-            cur_cell = self.__cells[current[0]][current[1]]
-            if not done:
-                if not cur_cell.has_top_wall and current[0] - 1 >= 0 and not self.__cells[current[0]-1][current[1]].visited:
-                    queue.append((current[0] - 1, current[1]))
-                if not cur_cell.has_right_wall and current[1] + 1 <= self.__num_cols-1 and not self.__cells[current[0]][current[1]+1].visited:
-                    queue.append((current[0], current[1] + 1))
-                if not cur_cell.has_bottom_wall and current[0] + 1 <= self.__num_rows-1 and not self.__cells[current[0]+1][current[1]].visited:
-                    queue.append((current[0] + 1, current[1]))
-                if not cur_cell.has_left_wall and current[1] - 1 >= 0 and not self.__cells[current[0]][current[1]-1].visited:
-                    queue.append((current[0], current[1] - 1))
+            prev = element
+            if (x,y) == end:
+                return (True, queue)
+        return (False, None)
 
-            key = f"{current[0]}{current[1]}"
-            if visited.get(key) is None:
-                visited.update({key:()})
-            if prev is None:
-                visited.update({key:(current,)})
-            else:
-                prevKey = f"{prev[0]}{prev[1]}"
-                visited.update({key:(visited.get(prevKey) + (current,))})
+    def __solve_r_dfs(self, start, end):
+        stack = []
+        stack.append((start, (start,)))
+        prev = None
+        while len(stack) > 0:
+            element = stack.pop()
+            x, y = element[0]
+            cell = self.__cells[x][y]
+            cell.visited = True
 
-            prev = current
-
-            if done:
-                return True
-
-            #TODO: draw path based on path took to current cell.
-            # current drawing is flawed
-            """
-            next_pos = queue[0]
-            next_cell = self.__cells[next_pos[0]][next_pos[1]]
-            cur_cell.draw_move(next_cell)
-            self.__animate()
-            """
-
-        return False
+            if not cell.has_top_wall and x-1 >= 0 and not self.__cells[x-1][y].visited:
+                step = (x-1, y)
+                stack.append((step, element[1] + (step,)))
+            if not cell.has_right_wall and y+1 <= self.__num_cols-1 and not self.__cells[x][y+1].visited:
+                step = (x, y+1)
+                stack.append((step, element[1] + (step,)))
+            if not cell.has_bottom_wall and x+1 <= self.__num_rows-1 and not self.__cells[x+1][y].visited:
+                step = (x+1, y)
+                stack.append((step, element[1] + (step,)))
+            if not cell.has_left_wall and y-1 >= 0 and not self.__cells[x][y-1].visited:
+                step = (x, y-1)
+                stack.append((step, element[1] + (step,)))
+       
+            sleep_duration = 0.0025
+            if prev is not None:
+                path = prev[1]
+                path_len = len(path)
+                for i in range(1, path_len):
+                    from_cell = self.__cells[path[i-1][0]][path[i-1][1]]
+                    to_cell = self.__cells[path[i][0]][path[i][1]]
+                    from_cell.draw_move(to_cell, True)
+                self.__animate(sleep_duration)
             
+            path = element[1]
+            path_len = len(path)
+            for i in range(1, path_len):
+                from_cell = self.__cells[path[i-1][0]][path[i-1][1]]
+                to_cell = self.__cells[path[i][0]][path[i][1]]
+                from_cell.draw_move(to_cell)
+                if i == path_len - 2:
+                    break
+            self.__animate(sleep_duration * 1.5)
+ 
+            from_cell = self.__cells[path[path_len-2][0]][path[path_len-2][1]]
+            to_cell = self.__cells[path[path_len-1][0]][path[path_len-1][1]]
+            from_cell.draw_move(to_cell)
+            self.__animate(sleep_duration * 1.5)
+
+            prev = element
+            if (x,y) == end:
+                return (True, stack)
+        return (False, None)
 
     def __reset_cells_visited(self):
         for r in range(self.__num_rows):
