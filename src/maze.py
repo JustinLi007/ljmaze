@@ -115,6 +115,7 @@ class Maze:
             result = self.__solve_r_bfs(start, end)
         else:
             result = self.__solve_r_dfs(start, end)
+        self.__reset_cells_visited()
         return result
 
     def __solve_r_bfs(self, start, end):
@@ -129,16 +130,20 @@ class Maze:
 
             if not cell.has_top_wall and x-1 >= 0 and not self.__cells[x-1][y].visited:
                 step = (x-1, y)
-                queue.append((step, element[1] + (step,)))
+                new_path = element[1] + (step,)
+                queue.append((step, new_path))
             if not cell.has_right_wall and y+1 <= self.__num_cols-1 and not self.__cells[x][y+1].visited:
                 step = (x, y+1)
-                queue.append((step, element[1] + (step,)))
+                new_path = element[1] + (step,)
+                queue.append((step, new_path))
             if not cell.has_bottom_wall and x+1 <= self.__num_rows-1 and not self.__cells[x+1][y].visited:
                 step = (x+1, y)
-                queue.append((step, element[1] + (step,)))
+                new_path = element[1] + (step,)
+                queue.append((step, new_path))
             if not cell.has_left_wall and y-1 >= 0 and not self.__cells[x][y-1].visited:
                 step = (x, y-1)
-                queue.append((step, element[1] + (step,)))
+                new_path = element[1] + (step,)
+                queue.append((step, new_path))
        
             sleep_duration = 0.005
             if prev is not None:
@@ -167,7 +172,7 @@ class Maze:
 
             prev = element
             if (x,y) == end:
-                return (True, queue)
+                return (True, element[1])
         return (False, None)
 
     def __solve_r_dfs(self, start, end):
@@ -220,7 +225,7 @@ class Maze:
 
             prev = element
             if (x,y) == end:
-                return (True, stack)
+                return (True, element[1])
         return (False, None)
 
     def __reset_cells_visited(self):

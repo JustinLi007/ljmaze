@@ -5,8 +5,8 @@ import random
 def main():
     WIN_WIDTH = 720
     WIN_HEIGHT = 720
-    ROWS = 12
-    COLS = 16
+    ROWS = 30
+    COLS = 30
     X_OFFSET = 50
     Y_OFFSET = 50
     CELL_WIDTH = (WIN_WIDTH - 2 * X_OFFSET) / COLS
@@ -25,11 +25,19 @@ def main():
             None)
     
     maze_grid = maze.get_grid()
-    
-    result = maze.solve(1)
+
+    """
+    result = maze.solve(0)
+    print("BFS")
     print(f"Maze solve result: {result[0]}")
     print(f"Path: {result[1]}")
+    """
 
+    result = maze.solve(1)
+    print("DFS")
+    print(f"Maze solve result: {result[0]}")
+    print(f"Path: {result[1]}")
+    
     window.wait_for_close()
     print("Finish")
     return 0
