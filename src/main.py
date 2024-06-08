@@ -5,14 +5,15 @@ import random
 def main():
     WIN_WIDTH = 720
     WIN_HEIGHT = 720
-    ROWS = 30
-    COLS = 30
-    X_OFFSET = 50
-    Y_OFFSET = 50
+    ROWS = 50
+    COLS = 50
+    X_OFFSET = 10
+    Y_OFFSET = 10
     CELL_WIDTH = (WIN_WIDTH - 2 * X_OFFSET) / COLS
     CELL_HEIGHT = (WIN_HEIGHT - 2 * Y_OFFSET) / ROWS
     
     window = Window(WIN_WIDTH, WIN_HEIGHT)
+    seed = None
     maze = Maze(
             X_OFFSET,
             Y_OFFSET,
@@ -22,18 +23,18 @@ def main():
             CELL_HEIGHT,
             False,
             window,
-            None)
+            seed)
     
     maze_grid = maze.get_grid()
 
     """
-    result = maze.solve(0)
+    result = maze.solve(0, False)
     print("BFS")
     print(f"Maze solve result: {result[0]}")
     print(f"Path: {result[1]}")
     """
 
-    result = maze.solve(1)
+    result = maze.solve(1, False)
     print("DFS")
     print(f"Maze solve result: {result[0]}")
     print(f"Path: {result[1]}")

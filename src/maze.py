@@ -40,7 +40,8 @@ class Maze:
             for j in range(self.__num_cols):
                 self.__draw_cell(i, j)
         self.__break_entrance_and_exit()
-        self.__break_walls_r(0, 0)
+        #self.__break_walls_r(0, 0)
+        self.__break_walls_df(0, 0)
         self.__reset_cells_visited()
         if self.__verbose:
             self.__pretty_print()
@@ -107,18 +108,77 @@ class Maze:
 
             self.__break_walls_r(next_i, next_j)
 
-    def solve(self, type=0):
+    def __break_walls_df(self, i, j):
+        stack = []
+        prev_stack = []
+        start = (i, j)
+        stack.append(start)
+
+        while len(stack) > 0:
+            element = stack.pop()
+            x, y = element
+            cell = self.__cells[x][y]
+            cell.visited = True
+
+            directions = []
+            if x-1 >= 0 and not self.__cells[x-1][y].visited:
+                step = (x-1, y)
+                directions.append(step)
+            if y+1 <= self.__num_cols-1 and not self.__cells[x][y+1].visited:
+                step = (x, y+1)
+                directions.append(step)
+            if x+1 <= self.__num_rows-1 and not self.__cells[x+1][y].visited:
+                step = (x+1, y)
+                directions.append(step)
+            if y-1 >= 0 and not self.__cells[x][y-1].visited:
+                step = (x, y-1)
+                directions.append(step)
+
+            dir_len = len(directions)
+            if dir_len <= 0:
+                if len(prev_stack) > 0:
+                    stack.append(prev_stack.pop())
+                continue
+
+            rand_idx = random.randint(0, dir_len-1)
+            next_dir = directions[rand_idx]
+            next_x, next_y = next_dir
+            next_cell = self.__cells[next_x][next_y]
+
+            x_diff = x - next_x
+            y_diff = y - next_y
+            if x_diff == 0 and y_diff < 0:
+                cell.has_right_wall = False
+                next_cell.has_left_wall = False
+            if x_diff == 0 and y_diff > 0:
+                cell.has_left_wall = False
+                next_cell.has_right_wall = False
+            if y_diff == 0 and x_diff < 0:
+                cell.has_bottom_wall = False
+                next_cell.has_top_wall = False
+            if y_diff == 0 and x_diff > 0:
+                cell.has_top_wall = False
+                next_cell.has_bottom_wall = False
+
+            cell.draw()
+            next_cell.draw()
+            self.__animate()
+
+            stack.append(next_dir)
+            prev_stack.append(element)
+
+    def solve(self, type=0, animate=False):
         start = (0,0)
         end = (self.__num_rows-1, self.__num_cols-1)
         result = None
         if type == 0:
-            result = self.__solve_r_bfs(start, end)
+            result = self.__solve_r_bfs(start, end, animate)
         else:
-            result = self.__solve_r_dfs(start, end)
+            result = self.__solve_r_dfs(start, end, animate)
         self.__reset_cells_visited()
         return result
 
-    def __solve_r_bfs(self, start, end):
+    def __solve_r_bfs(self, start, end, animate=False):
         queue = []
         queue.append((start, (start,)))
         prev = None
@@ -145,6 +205,7 @@ class Maze:
                 new_path = element[1] + (step,)
                 queue.append((step, new_path))
        
+            #if animate:
             sleep_duration = 0.005
             if prev is not None:
                 path = prev[1]
@@ -153,7 +214,8 @@ class Maze:
                     from_cell = self.__cells[path[i-1][0]][path[i-1][1]]
                     to_cell = self.__cells[path[i][0]][path[i][1]]
                     from_cell.draw_move(to_cell, True)
-                self.__animate(sleep_duration)
+                if animate:
+                    self.__animate(sleep_duration)
             
             path = element[1]
             path_len = len(path)
@@ -163,19 +225,22 @@ class Maze:
                 from_cell.draw_move(to_cell)
                 if i == path_len - 2:
                     break
-            self.__animate(sleep_duration * 1.5)
- 
+            if animate:
+                self.__animate(sleep_duration * 1.5)
+
             from_cell = self.__cells[path[path_len-2][0]][path[path_len-2][1]]
             to_cell = self.__cells[path[path_len-1][0]][path[path_len-1][1]]
             from_cell.draw_move(to_cell)
-            self.__animate(sleep_duration * 1.5)
+            if animate:
+                self.__animate(sleep_duration * 1.5)
 
             prev = element
             if (x,y) == end:
+                self.__animate()
                 return (True, element[1])
         return (False, None)
 
-    def __solve_r_dfs(self, start, end):
+    def __solve_r_dfs(self, start, end, animate=False):
         stack = []
         stack.append((start, (start,)))
         prev = None
@@ -197,7 +262,8 @@ class Maze:
             if not cell.has_left_wall and y-1 >= 0 and not self.__cells[x][y-1].visited:
                 step = (x, y-1)
                 stack.append((step, element[1] + (step,)))
-       
+      
+            #if animate:
             sleep_duration = 0.0025
             if prev is not None:
                 path = prev[1]
@@ -206,7 +272,8 @@ class Maze:
                     from_cell = self.__cells[path[i-1][0]][path[i-1][1]]
                     to_cell = self.__cells[path[i][0]][path[i][1]]
                     from_cell.draw_move(to_cell, True)
-                self.__animate(sleep_duration)
+                if animate:
+                    self.__animate(sleep_duration)
             
             path = element[1]
             path_len = len(path)
@@ -216,15 +283,18 @@ class Maze:
                 from_cell.draw_move(to_cell)
                 if i == path_len - 2:
                     break
-            self.__animate(sleep_duration * 1.5)
+            if animate:
+                self.__animate(sleep_duration * 1.5)
  
             from_cell = self.__cells[path[path_len-2][0]][path[path_len-2][1]]
             to_cell = self.__cells[path[path_len-1][0]][path[path_len-1][1]]
             from_cell.draw_move(to_cell)
-            self.__animate(sleep_duration * 1.5)
+            if animate:
+                self.__animate(sleep_duration * 1.5)
 
             prev = element
             if (x,y) == end:
+                self.__animate()
                 return (True, element[1])
         return (False, None)
 
