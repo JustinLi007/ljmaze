@@ -2,6 +2,7 @@ from graphics import Cell, Point
 from time import sleep
 import random
 
+
 class Maze:
     def __init__(
             self,
@@ -14,7 +15,7 @@ class Maze:
             verbose=False,
             window=None,
             seed=None
-            ):
+    ):
         self.__x = x
         self.__y = y
         self.__num_rows = num_rows
@@ -27,20 +28,20 @@ class Maze:
         self.__seed = seed
 
         if self.__seed is not None:
-            random.seed(self.__seed);
+            random.seed(self.__seed)
 
         self.__create_cells()
 
     def __create_cells(self):
         self.__cells = [
-                [None for _ in range(self.__num_cols)] for _ in
-                range(self.__num_rows)
-                ]
+            [None for _ in range(self.__num_cols)] for _ in
+            range(self.__num_rows)
+        ]
         for i in range(self.__num_rows):
             for j in range(self.__num_cols):
                 self.__draw_cell(i, j)
         self.__break_entrance_and_exit()
-        #self.__break_walls_r(0, 0)
+        # self.__break_walls_r(0, 0)
         self.__break_walls_df(0, 0)
         self.__reset_cells_visited()
         if self.__verbose:
@@ -61,12 +62,13 @@ class Maze:
         self.__window.redraw()
         sleep(sleep_duration)
 
-    def __break_entrance_and_exit(self): 
+    def __break_entrance_and_exit(self):
         if self.__cells is None:
             return
         self.__cells[0][0].has_top_wall = False
         self.__cells[0][0].draw()
-        self.__cells[self.__num_rows-1][self.__num_cols-1].has_bottom_wall = False
+        self.__cells[self.__num_rows -
+                     1][self.__num_cols-1].has_bottom_wall = False
         self.__cells[self.__num_rows-1][self.__num_cols-1].draw()
         self.__animate()
 
@@ -90,7 +92,7 @@ class Maze:
 
             rand_dir = random.randint(0, len(directions)-1)
             next_i, next_j = directions[rand_dir]
-             
+
             i_diff = i - next_i
             j_diff = j - next_j
             if i_diff == 0 and j_diff < 0:
@@ -168,7 +170,7 @@ class Maze:
             prev_stack.append(element)
 
     def solve(self, type=0, animate=False):
-        start = (0,0)
+        start = (0, 0)
         end = (self.__num_rows-1, self.__num_cols-1)
         result = None
         if type == 0:
@@ -204,8 +206,8 @@ class Maze:
                 step = (x, y-1)
                 new_path = element[1] + (step,)
                 queue.append((step, new_path))
-       
-            #if animate:
+
+            # if animate:
             sleep_duration = 0.005
             if prev is not None:
                 path = prev[1]
@@ -216,7 +218,7 @@ class Maze:
                     from_cell.draw_move(to_cell, True)
                 if animate:
                     self.__animate(sleep_duration)
-            
+
             path = element[1]
             path_len = len(path)
             for i in range(1, path_len):
@@ -235,7 +237,7 @@ class Maze:
                 self.__animate(sleep_duration * 1.5)
 
             prev = element
-            if (x,y) == end:
+            if (x, y) == end:
                 self.__animate()
                 return (True, element[1])
         return (False, None)
@@ -262,8 +264,8 @@ class Maze:
             if not cell.has_left_wall and y-1 >= 0 and not self.__cells[x][y-1].visited:
                 step = (x, y-1)
                 stack.append((step, element[1] + (step,)))
-      
-            #if animate:
+
+            # if animate:
             sleep_duration = 0.0025
             if prev is not None:
                 path = prev[1]
@@ -274,7 +276,7 @@ class Maze:
                     from_cell.draw_move(to_cell, True)
                 if animate:
                     self.__animate(sleep_duration)
-            
+
             path = element[1]
             path_len = len(path)
             for i in range(1, path_len):
@@ -285,7 +287,7 @@ class Maze:
                     break
             if animate:
                 self.__animate(sleep_duration * 1.5)
- 
+
             from_cell = self.__cells[path[path_len-2][0]][path[path_len-2][1]]
             to_cell = self.__cells[path[path_len-1][0]][path[path_len-1][1]]
             from_cell.draw_move(to_cell)
@@ -293,7 +295,7 @@ class Maze:
                 self.__animate(sleep_duration * 1.5)
 
             prev = element
-            if (x,y) == end:
+            if (x, y) == end:
                 self.__animate()
                 return (True, element[1])
         return (False, None)
@@ -317,16 +319,16 @@ class Maze:
 
     def get_grid(self):
         result = [
-                [None for _ in range(self.__num_cols)] for _ in
-                range(self.__num_rows)
-                ]
+            [None for _ in range(self.__num_cols)] for _ in
+            range(self.__num_rows)
+        ]
         for r in range(self.__num_rows):
             for c in range(self.__num_cols):
                 cur_cell = self.__cells[r][c]
                 result[r][c] = Cell(
-                        cur_cell.get_top_left_corner(),
-                        cur_cell.get_bottom_right_corner()
-                        )
+                    cur_cell.get_top_left_corner(),
+                    cur_cell.get_bottom_right_corner()
+                )
                 result[r][c].has_top_wall = cur_cell.has_top_wall
                 result[r][c].has_bottom_wall = cur_cell.has_bottom_wall
                 result[r][c].has_left_wall = cur_cell.has_left_wall
@@ -335,5 +337,5 @@ class Maze:
 
     def __pretty_print(self):
         print(self.__cells)
-        #for row in self.__cells:
+        # for row in self.__cells:
         #    print(row)

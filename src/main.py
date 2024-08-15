@@ -2,6 +2,7 @@ from graphics import Window, Point, Line, Cell
 from maze import Maze
 import random
 
+
 def main():
     WIN_WIDTH = 720
     WIN_HEIGHT = 720
@@ -11,20 +12,20 @@ def main():
     Y_OFFSET = 10
     CELL_WIDTH = (WIN_WIDTH - 2 * X_OFFSET) / COLS
     CELL_HEIGHT = (WIN_HEIGHT - 2 * Y_OFFSET) / ROWS
-    
+
     window = Window(WIN_WIDTH, WIN_HEIGHT)
     seed = None
     maze = Maze(
-            X_OFFSET,
-            Y_OFFSET,
-            ROWS,
-            COLS,
-            CELL_WIDTH,
-            CELL_HEIGHT,
-            False,
-            window,
-            seed)
-    
+        X_OFFSET,
+        Y_OFFSET,
+        ROWS,
+        COLS,
+        CELL_WIDTH,
+        CELL_HEIGHT,
+        False,
+        window,
+        seed)
+
     maze_grid = maze.get_grid()
 
     """
@@ -38,10 +39,11 @@ def main():
     print("DFS")
     print(f"Maze solve result: {result[0]}")
     print(f"Path: {result[1]}")
-    
+
     window.wait_for_close()
     print("Finish")
     return 0
+
 
 if __name__ == "__main__":
     main()

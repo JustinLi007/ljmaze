@@ -1,5 +1,6 @@
 from tkinter import Tk, BOTH, Canvas
 
+
 class Window:
     def __init__(self, width, height):
         self.__width = width
@@ -8,7 +9,7 @@ class Window:
         self.__root.protocol("WM_DELETE_WINDOW", self.close)
         self.__root.title("Maze")
         self.__canvas = Canvas(self.__root, bg="white", height=height,
-                width=width)
+                               width=width)
         self.__canvas.pack(fill=BOTH, expand=1)
         self.__is_running = False
 
@@ -28,6 +29,7 @@ class Window:
     def draw_line(self, line, fill_color="black"):
         line.draw(self.__canvas, fill_color)
 
+
 class Point:
     def __init__(self, x, y):
         self.x = x
@@ -36,6 +38,7 @@ class Point:
     def __repr__(self):
         return f"({self.x}, {self.y})"
 
+
 class Line:
     def __init__(self, point1, point2):
         self.__point1 = point1
@@ -43,13 +46,14 @@ class Line:
 
     def draw(self, canvas, fill_color="black"):
         canvas.create_line(
-                self.__point1.x,
-                self.__point1.y,
-                self.__point2.x,
-                self.__point2.y,
-                fill=fill_color,
-                width=2
-                )
+            self.__point1.x,
+            self.__point1.y,
+            self.__point2.x,
+            self.__point2.y,
+            fill=fill_color,
+            width=2
+        )
+
 
 class Cell:
     def __init__(self, point1, point2, window=None):
@@ -65,15 +69,15 @@ class Cell:
     def draw_move(self, target_cell, undo=False):
         fill_color = "gray" if undo else "red"
         self_center_point = Point(
-                (self.__point2.x - self.__point1.x) / 2 + self.__point1.x,
-                (self.__point2.y - self.__point1.y) / 2 + self.__point1.y
-                )
+            (self.__point2.x - self.__point1.x) / 2 + self.__point1.x,
+            (self.__point2.y - self.__point1.y) / 2 + self.__point1.y
+        )
         target_center_point = Point(
-                (target_cell.__point2.x - target_cell.__point1.x) / 2 +
-                target_cell.__point1.x,
-                (target_cell.__point2.y - target_cell.__point1.y) / 2 +
-                target_cell.__point1.y
-                )
+            (target_cell.__point2.x - target_cell.__point1.x) / 2 +
+            target_cell.__point1.x,
+            (target_cell.__point2.y - target_cell.__point1.y) / 2 +
+            target_cell.__point1.y
+        )
         path = Line(self_center_point, target_center_point)
         self.__window.draw_line(path, fill_color)
 
@@ -117,15 +121,14 @@ class Cell:
     def get_bottom_right_corner(self):
         br = Point(self.__point2.x, self.__point2.y)
         return br
-    
+
     def __repr__(self):
         top_left_corner = self.__point1
         bottom_right_corner = self.__point2
         top_right_corner = Point(self.__point2.x, self.__point1.y)
         bottom_left_corner = Point(self.__point1.x, self.__point2.y)
         return (
-f"""
+            f"""
 TL: {self.__point1} TR: {top_right_corner} BL: {bottom_left_corner} BR: {self.__point2}
 """
         )
-
